@@ -11,9 +11,10 @@ option(CLIPPER2_UTILS "Build utilities" ON)
 option(CLIPPER2_EXAMPLES "Build examples" ON)
 option(CLIPPER2_TESTS "Build tests" ON)
 option(USE_EXTERNAL_GTEST "Use system-wide installed GoogleTest" OFF)
-option(USE_EXTERNAL_GBENCHMARK "Use the googlebenchmark" OFF) 
+option(USE_EXTERNAL_GBENCHMARK "Use the googlebenchmark" OFF)
 option(BUILD_SHARED_LIBS "Build shared libs" OFF)
 set(CLIPPER2_USINGZ "ON" CACHE STRING "Build Clipper2Z, either \"ON\" or \"OFF\" or \"ONLY\"")
+set(CLIPPER2_MAX_PRECISION 8 CACHE STRING "Maximum precision allowed for double to int64 scaling")
 
 include(GNUInstallDirs)
 
@@ -40,6 +41,11 @@ if (NOT (CLIPPER2_USINGZ STREQUAL "ONLY"))
   list(APPEND CLIPPER2_LIBS Clipper2)
   add_library(Clipper2 ${CLIPPER2_INC} ${CLIPPER2_SRC})
 
+  target_compile_definitions(
+    Clipper2
+    PUBLIC CLIPPER2_MAX_PRECISION=${CLIPPER2_MAX_PRECISION}
+  )
+
   target_include_directories(Clipper2
     PUBLIC Clipper2Lib/include
   )
@@ -57,7 +63,10 @@ if (NOT (CLIPPER2_USINGZ STREQUAL "OFF"))
   list(APPEND CLIPPER2_LIBS Clipper2Z)
   add_library(Clipper2Z ${CLIPPER2_INC} ${CLIPPER2_SRC})
 
-  target_compile_definitions(Clipper2Z PUBLIC USINGZ)
+  target_compile_definitions(
+    Clipper2Z
+    PUBLIC USINGZ CLIPPER2_MAX_PRECISION=${CLIPPER2_MAX_PRECISION}
+  )
 
   target_include_directories(Clipper2Z
     PUBLIC Clipper2Lib/include

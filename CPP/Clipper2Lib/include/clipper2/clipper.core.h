@@ -20,6 +20,12 @@
 #include <climits>
 #include <numeric>
 
+#ifdef CLIPPER2_MAX_PRECISION
+const int MAX_PRECISION = CLIPPER2_MAX_PRECISION;
+#else
+const int MAX_PRECISION = 8;
+#endif
+
 namespace Clipper2Lib
 {
 
@@ -582,10 +588,10 @@ namespace Clipper2Lib
 
   inline void CheckPrecision(int& precision, int& error_code)
   {
-    if (precision >= -8 && precision <= 8) return;
+    if (precision >= -MAX_PRECISION && precision <= MAX_PRECISION) return;
     error_code |= precision_error_i; // non-fatal error
     DoError(precision_error_i);      // unless exceptions enabled
-    precision = precision > 8 ? 8 : -8;
+    precision = precision > MAX_PRECISION ? MAX_PRECISION : -MAX_PRECISION;
   }
 
   inline void CheckPrecision(int& precision)
